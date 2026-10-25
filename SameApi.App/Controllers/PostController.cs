@@ -28,6 +28,14 @@ namespace SameApi.App.Controllers
             await _mediator.Send(command, ct);
             return Ok();
         }
+
+        [HttpGet]
+        public async Task<IActionResult> GetFeed()
+        {
+            var post = await _mediator.Send(new GetAllPostQuery());
+            return post is null ? NotFound() : Ok(post);
+        }
+
         [AllowAnonymous]
         [HttpGet("{id}")]
         public async Task<IActionResult> GetById(string id, CancellationToken ct)
