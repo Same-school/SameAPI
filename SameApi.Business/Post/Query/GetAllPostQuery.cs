@@ -27,7 +27,7 @@ namespace SameApi.Business.Post.Query
         {
             var post = await _apiSameUnitOfWork.PostRepository.GetAllAsync();
 
-            var response = post.Where(x => x.IsDeleted == false).ToList();
+            var response = post.Where(x => x.IsDeleted == false).OrderByDescending(x => x.CreatedAt).ToList();
 
             return _mapper.Map<List<PostResponse>>(response);
         }
