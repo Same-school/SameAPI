@@ -34,13 +34,13 @@ namespace SameApi.Db.Repository.Implementation
             comment.Id = commentRef.Id;
         }
 
-        public async Task<IReadOnlyList<CommentDao>> GetByPostAsync(string postId, int limit)
+        public async Task<IReadOnlyList<CommentDao>> GetByPostAsync(
+            string postId, int limit = 50)
         {
-            var snap = await Collection
-                .WhereEqualTo("postId", postId)
-                .OrderBy("createdAt")
-                .Limit(limit)
-                .GetSnapshotAsync();
+            var query = Collection
+                .WhereEqualTo("postId", postId);
+
+            var snap = await query.Limit(limit).GetSnapshotAsync();
             return snap.Documents.Select(d => d.ConvertTo<CommentDao>()).ToList();
         }
     }

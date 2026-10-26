@@ -25,8 +25,11 @@ namespace SameApi.Business
                     opt => opt.MapFrom(src => src.CreatedAt.ToDateTime())
                 );
 
-
             CreateMap<CommentInput, CommentDao>();
+            CreateMap<CommentDao, CommentResponse>()
+                .ForMember(d => d.CreatedAt, o => o.MapFrom(s => s.CreatedAt.ToDateTime()))
+                .ForMember(d => d.Text, o => o.MapFrom(s => s.IsDeleted ? "" : s.Text));
+
 
         }
     }

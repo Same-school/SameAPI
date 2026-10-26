@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using SameApi.Business.Comment.Command;
+using SameApi.Business.Comment.Query;
 
 namespace SameApi.App.Controllers
 {
@@ -26,6 +27,12 @@ namespace SameApi.App.Controllers
             command.Uid = uid;
             await _mediator.Send(command, ct);
             return Ok();
+        }
+        [HttpGet("post/{postId}")]
+        public async Task<IActionResult> GetCommentByPostId(string postId, CancellationToken ct)
+        {
+            var comment = await _mediator.Send(new GetCommentByPostId { Id = postId}, ct);
+            return comment is null ? NotFound() : Ok(comment);
         }
     }
 }
