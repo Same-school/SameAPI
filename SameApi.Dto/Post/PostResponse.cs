@@ -2,6 +2,7 @@
 {
     public class PostResponse
     {
+        public string Id { get; set; } = "";
         public string? AuthorId { get; set; }
         public string? CommunityId { get; set; }
         public string? Title { get; set; }
