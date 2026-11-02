@@ -1,167 +1,132 @@
-<div align="center">
+# Same API
 
-```
- ____    _    __  __ _____
-/ ___|  / \  |  \/  | ____|
-\___ \ / _ \ | |\/| |  _|
- ___) / ___ \| |  | | |___
-|____/_/   \_\_|  |_|_____|
-```
+REST API for **Same**, a social network for students in Geneva.
 
-### 🎓 The social network for Geneva students
+![.NET 10](https://img.shields.io/badge/.NET-10-512BD4?style=flat-square&logo=dotnet&logoColor=white)
+![Firebase](https://img.shields.io/badge/Firebase-Auth%20%2B%20Firestore-FFCA28?style=flat-square&logo=firebase&logoColor=black)
+![OpenAPI](https://img.shields.io/badge/OpenAPI-3.0-85EA2D?style=flat-square&logo=swagger&logoColor=black)
 
-![.NET](https://img.shields.io/badge/.NET-10-512BD4?style=for-the-badge&logo=dotnet&logoColor=white)
-![C#](https://img.shields.io/badge/C%23-239120?style=for-the-badge&logo=csharp&logoColor=white)
-![Firebase](https://img.shields.io/badge/Firebase-FFCA28?style=for-the-badge&logo=firebase&logoColor=black)
-![Swagger](https://img.shields.io/badge/Swagger-85EA2D?style=for-the-badge&logo=swagger&logoColor=black)
+## Table of contents
 
-</div>
+- [Overview](#overview)
+- [Architecture](#architecture)
+- [Getting started](#getting-started)
+- [API](#api)
+- [Project structure](#project-structure)
+- [Data model](#data-model)
+- [Contact](#contact)
 
----
+## Overview
 
-## 📌 Summary
+The Same API is the single entry point for all Same clients. It owns authentication, business rules and data access, and sits in front of Firebase so that clients never talk to the database directly.
 
-**Same** is a Threads-like social network for students in Geneva. This repo is its **REST API** (ASP.NET Core): it handles users, posts, comments, reactions, follows, hashtags, DMs and notifications.
+**Currently supported**
 
-The API sits **in front of Firebase** (auth + data). Clients only talk to the API, which keeps all business rules in one place.
+- User profiles, including private accounts
+- Follow and unfollow
+- Posts with an optional image
+- Comments with nested replies
+
+## Architecture
 
 ```mermaid
 flowchart LR
-    A[📱 Same app] -->|Firebase ID token| B[⚙️ Same API]
-    B --> C[🔐 Firebase Auth]
-    B --> D[(🔥 Firebase DB)]
+    A[Same apps] -->|Firebase ID token| B[Same API]
+    B --> C[Firebase Auth]
+    B --> D[(Firestore)]
 ```
 
----
+Clients sign in with Firebase and send the resulting ID token to the API. The API verifies the token, applies the business rules, and reads or writes Firestore on the caller's behalf.
 
-## ✨ Features
+**Stack:** .NET 10 · ASP.NET Core · MediatR · AutoMapper · FluentValidation · Firebase Auth · Firestore · Docker
 
-- 🧑 **Profiles**: bio, pictures, school, profession, private / verified accounts
-- 📝 **Posts** with media, visibility, hashtags and saved posts
-- 🗨️ **Comments** with nested replies
-- ❤️ **Reactions** on posts and comments
-- 👥 **Follow** and **block** system
-- ✉️ **DMs**: 1-to-1 and group conversations
-- 🔔 **Notifications**
-- 📖 **Swagger UI** for live API docs
+## Getting started
 
----
+### Prerequisites
 
-## 🗺️ Data model
+- [.NET 10 SDK](https://dotnet.microsoft.com/download)
+- A Firebase project with Authentication and Firestore enabled
 
-Main relations (full detail in [MLD.md](./MLD.md)):
+### Configuration
 
-```mermaid
-erDiagram
-    USER ||--o{ POST : creates
-    USER ||--o{ COMMENT : writes
-    USER ||--o{ REACTION : reacts
-    USER ||--o{ FOLLOW : follows
-    USER ||--o{ MESSAGE : sends
-    USER ||--o{ NOTIFICATION : receives
-    USER }o--|| SCHOOL : attends
-    SCHOOL }o--|| PROFESSION : related_to
-    POST ||--o{ COMMENT : receives
-    POST ||--o{ MEDIA : contains
-    POST }o--o{ HASHTAG : tagged
-    COMMENT ||--o{ COMMENT : replies_to
-    CONVERSATION ||--o{ MESSAGE : contains
-    CONVERSATION ||--o{ CONVERSATIONPARTICIPANT : has
+Set the following in `appsettings.Development.json` or as environment variables:
+
+```json
+{
+  "Firestore": {
+    "ProjectId": "<firebase-project-id>",
+    "DatabaseId": "(default)"
+  }
+}
 ```
 
----
+Credentials are never committed. Use environment variables or a secret manager.
 
-## 📡 Endpoints
-
-> 🔒 All endpoints require a valid Firebase token.
-
-<details>
-<summary><b>🧑 Users</b></summary>
-
-| Method | Endpoint | Description |
-|---|---|---|
-| `GET` | `/api/users/{id}` | Get a profile |
-| `PUT` | `/api/users/{id}` | Update a profile |
-| `POST` | `/api/users/{id}/follow` | Follow a user |
-| `DELETE` | `/api/users/{id}/follow` | Unfollow |
-| `POST` | `/api/users/{id}/block` | Block a user |
-| `DELETE` | `/api/users/{id}/block` | Unblock |
-
-</details>
-
-<details>
-<summary><b>📝 Posts & comments</b></summary>
-
-| Method | Endpoint | Description |
-|---|---|---|
-| `GET` | `/api/posts` | Get the feed |
-| `POST` | `/api/posts` | Create a post |
-| `GET` | `/api/posts/{id}` | Get one post |
-| `PUT` | `/api/posts/{id}` | Edit a post |
-| `DELETE` | `/api/posts/{id}` | Delete a post |
-| `GET` | `/api/posts/{id}/comments` | List comments |
-| `POST` | `/api/posts/{id}/comments` | Add a comment |
-| `DELETE` | `/api/comments/{id}` | Delete a comment |
-| `POST` | `/api/posts/{id}/reactions` | React to a post |
-| `POST` | `/api/posts/{id}/save` | Save a post |
-
-</details>
-
-<details>
-<summary><b>✉️ Messages</b></summary>
-
-| Method | Endpoint | Description |
-|---|---|---|
-| `GET` | `/api/conversations` | My conversations |
-| `POST` | `/api/conversations` | Start a conversation |
-| `GET` | `/api/conversations/{id}/messages` | Read messages |
-| `POST` | `/api/conversations/{id}/messages` | Send a message |
-
-</details>
-
-<details>
-<summary><b>🔔 Notifications</b></summary>
-
-| Method | Endpoint | Description |
-|---|---|---|
-| `GET` | `/api/notifications` | My notifications |
-| `PUT` | `/api/notifications/{id}/read` | Mark as read |
-
-</details>
-
----
-
-## 📁 Project structure
-
-```
-SameApi
-├── SameApi.App        → entry point (Program.cs)
-├── SameApi.Business   → logic + AutoMapper profile
-├── SameApi.Data       → base context, repositories
-├── SameApi.Db         → DbContext + Unit of Work
-├── SameApi.Dto        → DTOs
-└── SameApi.Model      → domain models
-```
-
----
-
-## ⚡ Quick start
-
-**Prerequisites:** [.NET 10](https://dotnet.microsoft.com/) · a Firebase project
+### Run
 
 ```bash
 git clone https://github.com/Tisa40486/Same.git
 cd Same
-# add your Firebase credentials (appsettings.json or env vars)
 dotnet run --project SameApi.App
 ```
 
-Then open Swagger UI to test the endpoints.
+### Run with Docker
 
----
+```bash
+docker build -t same-api .
+docker run -p 8080:8080 same-api
+```
 
-<div align="center">
+## API
 
-📧 [same@sames.school](mailto:same@sames.school) · 🧑‍💻 [@Tisa40486](https://github.com/Tisa40486)
+Every endpoint except `/health` requires a Firebase ID token:
 
-</div>
+```http
+Authorization: Bearer <firebase-id-token>
+```
+
+Requests and responses use JSON. Swagger UI is served by the running API.
+
+| Method | Endpoint | Description |
+|---|---|---|
+| `GET` | `/health` | Health check |
+| `GET` | `/api/user/me` | Current user |
+| `GET` | `/api/user/{id}` | Get a user |
+| `POST` | `/api/user/create` | Create a user |
+| `PATCH` | `/api/user/update` | Update a user |
+| `PATCH` | `/api/user/follow` | Follow a user |
+| `PATCH` | `/api/user/unfollow` | Unfollow a user |
+| `DELETE` | `/api/user/delete/{id}` | Delete a user |
+| `POST` | `/api/post/create` | Create a post |
+| `GET` | `/api/post/{id}` | Get a post |
+| `GET` | `/api/post/user/{userId}` | List a user's posts |
+| `PATCH` | `/api/post/delete` | Delete a post |
+| `POST` | `/api/comment/create` | Create a comment or a reply |
+
+## Project structure
+
+```
+SameApi
+├── SameApi.App        Entry point and HTTP configuration
+├── SameApi.Business   Use cases, validation, mapping
+├── SameApi.Data       Base context and repositories
+├── SameApi.Db         DbContext and Unit of Work
+├── SameApi.Dto        Data transfer objects
+└── SameApi.Model      Domain models
+```
+
+## Data model
+
+The data model is described in [MLD](./MLD.md).
+
+## Security
+
+To report a vulnerability, please read our [security policy](./SECURITY.md).
+
+## Development environment
+
+To get an authentication token for local development, see [Getting a token](./HOWTOGETTHETOKEN.md).
+
+## Contact
+
+[same@sames.school](mailto:same@sames.school) · [@Tisa40486](https://github.com/Tisa40486)

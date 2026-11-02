@@ -1,206 +1,71 @@
-# Social Network - Logical Data Model
+# Logical Data Model – Same API
+
+## 1. Schema
 
 ```mermaid
 erDiagram
-    User {
-        int id PK
+    USER ||--o{ POST : "writes"
+    USER ||--o{ COMMENT : "writes"
+    USER }o--o{ USER : "follows"
+    USER }o--o| SCHOOL : "attends"
+    USER }o--o| GENDER : "has"
+    POST ||--o{ COMMENT : "receives"
+    COMMENT ||--o{ COMMENT : "replies to"
+    COMMUNITY |o--o{ POST : "contains"
+
+    USER {
+        string id PK
         string username
-        string email
-        string passwordHash
         string firstName
         string lastName
+        string email
         string bio
-        date birthDate
+        string birthDate
         string profilePictureUrl
         string coverPictureUrl
-        string phoneNumber
-        string website
-        boolean isAdmin
-        boolean isVerified
-        boolean isPrivate
-        string status
+        bool isAdmin
+        bool isVerified
+        bool isPrivate
         int followersCount
         int followingCount
         int postsCount
-        datetime createdAt
-        datetime updatedAt
-        datetime lastLoginAt
-        int genderId FK
-        int schoolId FK
+        timestamp createdAt
+        timestamp updatedAt
+        timestamp lastLoginAt
+        string genderId FK
+        string schoolId FK
     }
-
-    Gender {
-        int id PK
-        string name
+    POST {
+        string id PK
+        string authorId FK
+        string communityId FK
+        string title
+        string text
+        string imageUrl
+        int commentsCount
+        timestamp createdAt
+        timestamp updatedAt
+        bool isDeleted
     }
-
-    School {
-        int id PK
-        string name
-        string city
-        string country
-        int professionId FK
+    COMMENT {
+        string id PK
+        string postId FK
+        string parentCommentId FK
+        string authorId FK
+        string text
+        timestamp createdAt
+        bool isDeleted
     }
-
-    Profession {
-        int id PK
-        string name
-        string description
-    }
-
-    Post {
-        int id PK
-        int userId FK
-        string content
-        string visibility
-        string location
-        int likeCount
-        int commentCount
-        int shareCount
-        boolean isEdited
-        string status
-        datetime createdAt
-        datetime updatedAt
-    }
-
-    Media {
-        int id PK
-        int postId FK
-        string mediaType
-        string url
-        string altText
-        int sortOrder
-        datetime createdAt
-    }
-
-    Comment {
-        int id PK
-        int postId FK
-        int userId FK
-        int parentCommentId FK
-        string content
-        int likeCount
-        boolean isEdited
-        datetime createdAt
-        datetime updatedAt
-    }
-
-    Reaction {
-        int id PK
-        int userId FK
-        int postId FK
-        int commentId FK
+    SCHOOL {
+        string id PK
+        string label
         string type
-        datetime createdAt
     }
-
-    Follow {
-        int id PK
-        int followerId FK
-        int followingId FK
-        string status
-        datetime createdAt
+    GENDER {
+        string id PK
+        string label
+        int order
     }
+```
 
-    Hashtag {
-        int id PK
-        string name
-        datetime createdAt
-    }
-
-    PostHashtag {
-        int id PK
-        int postId FK
-        int hashtagId FK
-    }
-
-    SavedPost {
-        int id PK
-        int userId FK
-        int postId FK
-        datetime createdAt
-    }
-
-    Conversation {
-        int id PK
-        boolean isGroup
-        string name
-        datetime createdAt
-        datetime updatedAt
-    }
-
-    ConversationParticipant {
-        int id PK
-        int conversationId FK
-        int userId FK
-        string role
-        datetime joinedAt
-        datetime lastReadAt
-    }
-
-    Message {
-        int id PK
-        int conversationId FK
-        int senderId FK
-        string content
-        string messageType
-        string mediaUrl
-        boolean isRead
-        datetime createdAt
-        datetime readAt
-    }
-
-    Notification {
-        int id PK
-        int userId FK
-        int actorId FK
-        string type
-        string content
-        string targetType
-        int targetId
-        boolean isRead
-        datetime createdAt
-    }
-
-    Block {
-        int id PK
-        int blockerId FK
-        int blockedId FK
-        datetime createdAt
-    }
-
-    Gender ||--o{ User : "assigned to"
-    School ||--o{ User : "attended by"
-    Profession ||--o{ School : "related to"
-
-    User ||--o{ Post : "creates"
-    Post ||--o{ Media : "contains"
-
-    User ||--o{ Comment : "writes"
-    Post ||--o{ Comment : "receives"
-    Comment ||--o{ Comment : "replies to"
-
-    User ||--o{ Reaction : "reacts"
-    Post ||--o{ Reaction : "receives"
-    Comment ||--o{ Reaction : "receives"
-
-    User ||--o{ Follow : "follows"
-    User ||--o{ Follow : "is followed"
-
-    Post ||--o{ PostHashtag : "has"
-    Hashtag ||--o{ PostHashtag : "used in"
-
-    User ||--o{ SavedPost : "saves"
-    Post ||--o{ SavedPost : "is saved"
-
-    Conversation ||--o{ ConversationParticipant : "has"
-    User ||--o{ ConversationParticipant : "participates in"
-
-    Conversation ||--o{ Message : "contains"
-    User ||--o{ Message : "sends"
-
-    User ||--o{ Notification : "receives"
-    User ||--o{ Notification : "triggers"
-
-    User ||--o{ Block : "blocks"
-    User ||--o{ Block : "is blocked by"
+---
