@@ -33,16 +33,12 @@ namespace SameApi.Business.Post.Query
         public async Task<List<PostResponse>> Handle(GetAllPostQuery request, CancellationToken cancellationToken)
         {
             var now = DateTime.UtcNow;
-
             var followedIds = await _apiSameUnitOfWork.UserRepository.LoadFollowedIdsAsync(request.userId);
-            if (followedIds.Count == 0)
-                return new List<PostResponse>();
 
             var since = Timestamp.FromDateTime(now.AddDays(-DayLimit));
 
-            var candidates = await _apiSameUnitOfWork.PostRepository
-                .GetRecentPostsByAuthorsAsync(followedIds, since, PoolPerChunk);
-
+            var candidates = followedIds.Count == 0 ? await _apiSameUnitOfWork.PostRepository.GetRecentPostsAsync(since, PoolPerChunk) 
+                                                    : await _apiSameUnitOfWork.PostRepository.GetRecentPostsByAuthorsAsync(followedIds, since, PoolPerChunk);
             var page = candidates
                 .Select(p => new
                 {
@@ -54,6 +50,8 @@ namespace SameApi.Business.Post.Query
                 .Take(PageSize)
                 .Select(x => x.Post) 
                 .ToList();
+
+
             return _mapper.Map<List<PostResponse>>(page);
         }
     }

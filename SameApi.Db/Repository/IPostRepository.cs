@@ -10,5 +10,6 @@ namespace SameApi.Db.Repository
         Task CreateAsync(PostDao post);
         Task<List<PostDao>> GetByUserIdAsync(string userId);
         Task<List<PostDao>> GetRecentPostsByAuthorsAsync(IReadOnlyList<string> authorIds, Timestamp since, int limitPerChunk);
+        Task<List<PostDao>> GetRecentPostsAsync(Timestamp since, int limit);
     }
 }
