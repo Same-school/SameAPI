@@ -11,5 +11,6 @@ namespace SameApi.Db.Repository
         Task UpdateFieldsAsync(string id, Dictionary<string, object> updates);
         Task FollowAsync(string followerId, string followedId); 
         Task UnfollowAsync(string followerId, string followedId);
+        Task VoteAsync(string userId, string postId, int value);
     }
 }

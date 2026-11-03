@@ -32,6 +32,15 @@ namespace SameApi.Model
         [FirestoreProperty("updatedAt")]
         public Timestamp UpdatedAt { get; set; }
 
+        [FirestoreProperty("upvotesCount")]
+        public int UpvotesCount { get; set; }
+
+        [FirestoreProperty("downvotesCount")]
+        public int DownvotesCount { get; set; }
+
+        [FirestoreProperty("wilsonScore")]
+        public Double WilsonScore { get; set; }
+
         [FirestoreProperty("isDeleted")]
         public bool IsDeleted { get; set; }
 

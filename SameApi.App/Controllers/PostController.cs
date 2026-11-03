@@ -57,5 +57,29 @@ namespace SameApi.App.Controllers
             await _mediator.Send(command, ct);
             return Ok();
         }
+
+        [HttpPatch("upvote")]
+        public async Task<IActionResult> UpVotePost([FromBody] VoteUpPostCommand command, CancellationToken ct)
+        {
+            var uid = User.FindFirst("user_id")?.Value;
+            if (uid is null) 
+                return Unauthorized();
+
+            command.CurrentUserId = uid;
+            await _mediator.Send(command, ct);
+            return Ok();
+        }
+
+        [HttpPatch("downvote")]
+        public async Task<IActionResult> DownVotePost([FromBody] VoteDownPostCommand command, CancellationToken ct)
+        {
+            var uid = User.FindFirst("user_id")?.Value;
+            if (uid is null)
+                return Unauthorized();
+
+            command.CurrentUserId = uid;
+            await _mediator.Send(command, ct);
+            return Ok();
+        }
     }
 }
