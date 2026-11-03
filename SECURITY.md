@@ -1,39 +1,48 @@
 # Security Policy
 
-## Supported Versions
+## Supported versions
 
-| Version | Supported |
-| ------- | --------- |
-| main    | ✅        |
-| < 1.0   | ❌        |
+Same API is under active development. Only the `main` branch, which is what runs in production, receives security fixes.
 
-## Reporting a Vulnerability
+## Reporting a vulnerability
 
 **Please do not report security vulnerabilities through public GitHub issues.**
 
-Instead, use one of the following:
+Use one of the following:
 
-- GitHub's [private vulnerability reporting](../../security/advisories/new) (Security tab > Report a vulnerability)
-- Email: mattisadam.dev@gmail.com
+- GitHub [private vulnerability reporting](../../security/advisories/new) (Security tab > Report a vulnerability)
+- Email: [same@sames.school](mailto:same@sames.school)
 
 Please include:
 
 - A description of the vulnerability and its potential impact
 - Steps to reproduce (requests, payloads, affected endpoints)
-- Any suggested fix, if you have one
+- A suggested fix, if you have one
 
-## What to Expect
+Do not include real user data or credentials in your report.
+
+## What to expect
 
 - Acknowledgement within **72 hours**
 - An initial assessment within **7 days**
-- Updates on the fix until it is resolved
+- Updates until the issue is resolved
 - Credit in the release notes if you wish
 
 ## Scope
 
-In scope: the API code in this repository (authentication, authorization, data exposure, injection, etc.).
+**In scope:** the API code in this repository (authentication, authorization, data exposure, injection, etc.).
 
-Out of scope: vulnerabilities in third-party services (Firebase, GitHub) and social engineering.
+**Out of scope:**
+
+- Vulnerabilities in third-party services (Firebase, Google Cloud, GitHub)
+- Social engineering and phishing
+- Denial-of-service and automated high-volume testing
+
+## Testing guidelines
+
+- Only test with accounts you created yourself.
+- Do not access, modify or delete data that belongs to other users.
+- Stop and report as soon as you confirm a vulnerability.
 
 ## Disclosure
 
