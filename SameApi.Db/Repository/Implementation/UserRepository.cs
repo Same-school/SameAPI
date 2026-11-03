@@ -16,6 +16,19 @@ namespace SameApi.Db.Repository.Implementation
             await document.CreateAsync(user);
         }
 
+        public async Task<List<string>> LoadFollowedIdsAsync(string userId)
+        {
+            var db = Collection.Database;
+
+            var snapshot = await db.Collection("follows")
+                .WhereEqualTo("followerId", userId)
+                .Select("followedId")
+                .GetSnapshotAsync();
+
+            return snapshot.Documents
+                .Select(d => d.GetValue<string>("followedId"))
+                .ToList();
+        }
         public async Task<bool> EmailExistsAsync(string? email)
         {
             var snap = await Collection.WhereEqualTo("email", email).Limit(1).GetSnapshotAsync();

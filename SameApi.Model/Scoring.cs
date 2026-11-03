@@ -3,7 +3,7 @@
     public static class Scoring
     {
         private const double Z = 1.96;
-
+        public const double BaseScore = 0.1;
         public static double WilsonLowerBound(long up, long down)
         {
             long n = up + down;

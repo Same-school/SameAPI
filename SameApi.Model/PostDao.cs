@@ -43,10 +43,5 @@ namespace SameApi.Model
 
         [FirestoreProperty("isDeleted")]
         public bool IsDeleted { get; set; }
-
-
-        // handle upvote and downvote .... 
-
-        // like commentCount but for the feed order by the most upvoted
     }
 }

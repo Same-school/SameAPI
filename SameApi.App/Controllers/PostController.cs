@@ -32,7 +32,11 @@ namespace SameApi.App.Controllers
         [HttpGet]
         public async Task<IActionResult> GetFeed()
         {
-            var post = await _mediator.Send(new GetAllPostQuery());
+            var uid = User.FindFirst("user_id")?.Value;
+            if (uid is null)
+                return Unauthorized();
+
+            var post = await _mediator.Send(new GetAllPostQuery { userId = uid});
             return post is null ? NotFound() : Ok(post);
         }
 

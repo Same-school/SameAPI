@@ -39,5 +39,27 @@ namespace SameApi.Db.Repository.Implementation
             var snap = await Collection.WhereEqualTo("authorId", userId).GetSnapshotAsync();
             return snap.Documents.Select(d => d.ConvertTo<PostDao>()).ToList();
         }
+        public async Task<List<PostDao>> GetRecentPostsByAuthorsAsync(IReadOnlyList<string> authorIds, Timestamp since, int limitPerChunk)
+        {
+            if (authorIds.Count == 0) return new();
+
+            var db = Collection.Database;
+
+            var tasks = authorIds.Chunk(30).Select(chunk =>
+                db.Collection("posts")
+                    .WhereIn("authorId", chunk)
+                    .WhereEqualTo("isDeleted", false)
+                    .WhereGreaterThanOrEqualTo("createdAt", since)
+                    .OrderByDescending("createdAt")
+                    .Limit(limitPerChunk)
+                    .GetSnapshotAsync());
+
+            var snapshots = await Task.WhenAll(tasks);
+
+            return snapshots
+                .SelectMany(s => s.Documents)
+                .Select(d => d.ConvertTo<PostDao>())
+                .ToList();
+        }
     }
 }
