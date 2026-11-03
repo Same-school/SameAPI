@@ -61,5 +61,16 @@ namespace SameApi.Db.Repository.Implementation
                 .Select(d => d.ConvertTo<PostDao>())
                 .ToList();
         }
+        public async Task<List<PostDao>> GetRecentPostsAsync(Timestamp since, int limit)
+        {
+            var snapshot = await Collection.Database.Collection("posts")
+                .WhereEqualTo("isDeleted", false)
+                .WhereGreaterThanOrEqualTo("createdAt", since)
+                .OrderByDescending("createdAt")
+                .Limit(limit)
+                .GetSnapshotAsync();
+
+            return snapshot.Documents.Select(d => d.ConvertTo<PostDao>()).ToList();
+        }
     }
 }
