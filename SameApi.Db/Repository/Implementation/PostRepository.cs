@@ -1,13 +1,11 @@
 ﻿using Google.Cloud.Firestore;
-using SameApi.Data.Model;
 using SameApi.Data.Repository;
 using SameApi.Db.DbContexts;
 using SameApi.Model;
 
 namespace SameApi.Db.Repository.Implementation
 {
-    public class PostRepository(IApiSameDbContext context)
-        : BaseRepository<IApiSameDbContext, PostDao>(context), IPostRepository
+    public class PostRepository(IApiSameDbContext context) : BaseRepository<IApiSameDbContext, PostDao>(context), IPostRepository
     {
         protected override string CollectionName => "posts";
 
@@ -72,5 +70,6 @@ namespace SameApi.Db.Repository.Implementation
 
             return snapshot.Documents.Select(d => d.ConvertTo<PostDao>()).ToList();
         }
+
     }
 }
