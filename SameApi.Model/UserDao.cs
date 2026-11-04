@@ -12,6 +12,9 @@ namespace SameApi.Model
         [FirestoreProperty("username")]
         public string Username { get; set; } = "";
 
+        [FirestoreProperty("displayname")]
+        public string DisplayName { get; set; } = "";
+
         [FirestoreProperty("firstName")]
         public string FirstName { get; set; } = "";
 
