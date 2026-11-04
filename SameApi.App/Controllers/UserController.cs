@@ -12,7 +12,7 @@ namespace SameApi.App.Controllers
     public class UserController : ControllerBase
     {
         private readonly IMediator _mediator;
-        
+
         public UserController(IMediator mediator)
         {
             _mediator = mediator;
@@ -91,8 +91,39 @@ namespace SameApi.App.Controllers
         [HttpDelete("delete/{id}")]
         public async Task<IActionResult> DeleteUserAsync(string id)
         {
-            await _mediator.Send(new DeleteUserCommand { Id = id});
+            await _mediator.Send(new DeleteUserCommand { Id = id });
             return Ok();
         }
+
+        [HttpPut("profile-picture")]
+        [RequestSizeLimit(5 * 1024 * 1024)]
+        public async Task<IActionResult> GetProfilePicture(IFormFile file, CancellationToken ct)
+        {
+            var requesterId = User.FindFirst("user_id")?.Value;
+            if (string.IsNullOrEmpty(requesterId))
+                return Unauthorized();
+
+            await using var stream = file.OpenReadStream();
+            var path = await _mediator.Send(
+                new UploadProfilePictureCommand
+                {
+                    Content = stream,
+                    Uid = requesterId
+                });
+
+            return Ok(new { path });
+        }
+
+        [HttpGet("profile-picture")]
+        public async Task<IActionResult> GetMyProfilePicture(CancellationToken ct)
+        {
+            var requesterId = User.FindFirst("user_id")?.Value;
+            if (string.IsNullOrEmpty(requesterId))
+                return Unauthorized();
+
+            var stream = await _mediator.Send(new GetProfilePictureQuery { Uid = requesterId }, ct);
+            return stream is null ? NotFound() : File(stream, "image/jpeg");
+        }
+
     }
 }

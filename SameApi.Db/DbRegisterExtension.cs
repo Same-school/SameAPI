@@ -1,4 +1,5 @@
 ﻿using Google.Cloud.Firestore;
+using Google.Cloud.Storage.V1;
 using Microsoft.Extensions.DependencyInjection;
 using SameApi.Db.DbContexts;
 using SameApi.Db.Repository;
@@ -19,6 +20,8 @@ namespace SameApi.Db
             services.AddScoped<ICommentRepository, CommentRepository>();
 
             services.AddScoped<IApiSameUnitOfWork, SameApiUnitOfWork>();
+
+            services.AddSingleton(StorageClient.Create());
         }
 
         public static void RegisterFireStore(this IServiceCollection services, string projectId, string databaseId)
