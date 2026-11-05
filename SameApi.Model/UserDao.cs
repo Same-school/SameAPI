@@ -9,10 +9,10 @@ namespace SameApi.Model
         [FirestoreDocumentId]
         public string Id { get; set; } = "";
 
-        [FirestoreProperty("username")]
+        [FirestoreProperty("userName")]
         public string Username { get; set; } = "";
 
-        [FirestoreProperty("displayname")]
+        [FirestoreProperty("displayName")]
         public string DisplayName { get; set; } = "";
 
         [FirestoreProperty("firstName")]
@@ -29,12 +29,6 @@ namespace SameApi.Model
 
         [FirestoreProperty("birthDate")]
         public string? BirthDate { get; set; }       
-
-        [FirestoreProperty("profilePictureUrl")]
-        public string? ProfilePictureUrl { get; set; }
-
-        [FirestoreProperty("coverPictureUrl")]
-        public string? CoverPictureUrl { get; set; }
 
         [FirestoreProperty("isAdmin")]
         public bool IsAdmin { get; set; }
@@ -62,9 +56,6 @@ namespace SameApi.Model
 
         [FirestoreProperty("lastLoginAt")]
         public Timestamp? LastLoginAt { get; set; }
-
-        [FirestoreProperty("genderId")]
-        public string? GenderId { get; set; }
 
         [FirestoreProperty("schoolId")]
         public string? SchoolId { get; set; }
