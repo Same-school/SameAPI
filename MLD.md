@@ -16,13 +16,13 @@ erDiagram
     USER {
         string id PK
         string username
+        string displayName
         string firstName
         string lastName
         string email
         string bio
         string birthDate
         string profilePictureUrl
-        string coverPictureUrl
         bool isAdmin
         bool isVerified
         bool isPrivate
@@ -32,7 +32,6 @@ erDiagram
         timestamp createdAt
         timestamp updatedAt
         timestamp lastLoginAt
-        string genderId FK
         string schoolId FK
     }
     POST {
@@ -60,11 +59,6 @@ erDiagram
         string id PK
         string label
         string type
-    }
-    GENDER {
-        string id PK
-        string label
-        int order
     }
 ```
 
