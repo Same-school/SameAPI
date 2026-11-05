@@ -11,7 +11,8 @@ namespace SameApi.Business
         public SameApiProfile()
         {
             //User
-            CreateMap<UserInput, UserDao>();
+            CreateMap<UserCreateInput, UserDao>();
+            CreateMap<UserUpdateInput, UserDao>();
             CreateMap<UserDao, UserResponse>()
                 .ForMember(
                     dest => dest.CreatedAt,
@@ -29,8 +30,6 @@ namespace SameApi.Business
             CreateMap<CommentDao, CommentResponse>()
                 .ForMember(d => d.CreatedAt, o => o.MapFrom(s => s.CreatedAt.ToDateTime()))
                 .ForMember(d => d.Text, o => o.MapFrom(s => s.IsDeleted ? "" : s.Text));
-
-
         }
     }
 }

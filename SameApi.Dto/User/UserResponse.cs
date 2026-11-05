@@ -3,10 +3,9 @@
     public class UserResponse
     {
         public string Id { get; set; } = "";
-        public string Username { get; set; } = "";
+        public string? Username { get; set; }
+        public string? DisplayName { get; set; }
         public string? Bio { get; set; }
-        public string? ProfilePictureUrl { get; set; }
-        public string? CoverPictureUrl { get; set; }
         public bool IsVerified { get; set; }
         public bool IsPrivate { get; set; }
         public int FollowersCount { get; set; }

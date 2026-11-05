@@ -8,7 +8,7 @@ using System.Text.Json.Serialization;
 
 namespace SameApi.Business.User.Command
 {
-    public class CreateUserCommand : UserInput, IRequest
+    public class CreateUserCommand : UserCreateInput, IRequest
     {
         [JsonIgnore]
         public string? Uid { get; set; } = default!;
@@ -29,8 +29,7 @@ namespace SameApi.Business.User.Command
         public async Task Handle(CreateUserCommand request, CancellationToken cancellationToken)
         {
             if (await _uow.UserRepository.EmailExistsAsync(request.Email))
-                throw new InvalidOperationException(
-                    "Un utilisateur avec cet e-mail existe déjà.");
+                throw new InvalidOperationException("A user with this email already exists.");
 
             var now = Timestamp.GetCurrentTimestamp();
 
@@ -38,6 +37,10 @@ namespace SameApi.Business.User.Command
 
             if (request.Email != null )
                 user.Username = request.Email.Split('@')[0];
+
+            if (string.IsNullOrEmpty(user.DisplayName))
+                user.DisplayName = user.Username;
+
             user.Id = request.Uid!;
             user.CreatedAt = now;
             user.UpdatedAt = now;
