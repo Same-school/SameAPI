@@ -65,7 +65,7 @@ Credentials are never committed. Use environment variables or a secret manager.
 ### Run
 
 ```bash
-git clone https://github.com/Tisa40486/Same.git
+git https://github.com/Same-school/SameAPI.git
 cd Same
 dotnet run --project SameApi.App
 ```
@@ -86,23 +86,6 @@ Authorization: Bearer <firebase-id-token>
 ```
 
 Requests and responses use JSON. Swagger UI is served by the running API.
-
-| Method | Endpoint | Description |
-|---|---|---|
-| `GET` | `/health` | Health check |
-| `GET` | `/api/user/me` | Current user |
-| `GET` | `/api/user/{id}` | Get a user |
-| `POST` | `/api/user/create` | Create a user |
-| `PATCH` | `/api/user/update` | Update a user |
-| `PATCH` | `/api/user/follow` | Follow a user |
-| `PATCH` | `/api/user/unfollow` | Unfollow a user |
-| `DELETE` | `/api/user/delete/{id}` | Delete a user |
-| `POST` | `/api/post/create` | Create a post |
-| `GET` | `/api/post/{id}` | Get a post |
-| `GET` | `/api/post/user/{userId}` | List a user's posts |
-| `PATCH` | `/api/post/delete` | Delete a post |
-| `POST` | `/api/comment/create` | Create a comment or a reply |
-
 ## Project structure
 
 ```
@@ -129,4 +112,4 @@ To get an authentication token for local development, see [Getting a token](./HO
 
 ## Contact
 
-[same@sames.school](mailto:same@sames.school) · [@Tisa40486](https://github.com/Tisa40486)
+[same@sames.school](mailto:same@sames.school) · [@mattis-adam](https://github.com/mattis-adam)
