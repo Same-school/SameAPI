@@ -1,4 +1,5 @@
 ﻿using System.Reflection;
+using System.Text.Json.Serialization;
 using Google.Cloud.Firestore;
 using MediatR;
 using SameApi.Db.UnitOfWork;
@@ -6,8 +7,9 @@ using SameApi.Dto.User;
 
 namespace SameApi.Business.User.Command
 {
-    public class UpdateUserCommand : UserInput, IRequest
+    public class UpdateUserCommand : UserUpdateInput, IRequest
     {
+        [JsonIgnore]
         public string Id { get; set; } = "";
     }
 
