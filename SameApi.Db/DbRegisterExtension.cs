@@ -31,13 +31,6 @@ namespace SameApi.Db
         }
 
         #region seed
-        public static async Task SeedGendersAsync(FirestoreDb db)
-        {
-            var batch = db.StartBatch();
-            foreach (var (id, data) in Genders)
-                batch.Set(db.Collection("genders").Document(id), data);
-            await batch.CommitAsync();
-        }
 
         public static async Task SeedSchoolsAsync(FirestoreDb db)
         {
@@ -46,13 +39,6 @@ namespace SameApi.Db
                 batch.Set(db.Collection("schools").Document(id), data);
             await batch.CommitAsync();
         }
-        private static readonly Dictionary<string, Dictionary<string, object>> Genders = new()
-        {
-            ["male"] = new() { ["label"] = "Homme", ["order"] = 1 },
-            ["female"] = new() { ["label"] = "Femme", ["order"] = 2 },
-            ["other"] = new() { ["label"] = "Autre", ["order"] = 3 },
-        };
-
         private static readonly Dictionary<string, Dictionary<string, object>> Schools = new()
         {
             ["co-aubepine"] = new() { ["label"] = "CO de l'Aubépine", ["type"] = "co" },
