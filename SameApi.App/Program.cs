@@ -71,7 +71,6 @@ var app = builder.Build();
 using (var scope = app.Services.CreateScope())
 {
     var db = scope.ServiceProvider.GetRequiredService<FirestoreDb>();
-    await DbRegisterExtension.SeedGendersAsync(db);
     await DbRegisterExtension.SeedSchoolsAsync(db);
 }
 
