@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using FirebaseAdmin.Auth;
 using MediatR;
 using SameApi.Db.UnitOfWork;
 
@@ -22,6 +23,13 @@ namespace SameApi.Business.User.Command
         public async Task<string> Handle(DeleteUserCommand command, CancellationToken cancellationToken)
         {
             await _iuow.UserRepository.RemoveByIdAsync(command.Id);
+            try
+            {
+                await FirebaseAuth.DefaultInstance.DeleteUserAsync(command.Id, cancellationToken);
+            }
+            catch (FirebaseAuthException e) when (e.AuthErrorCode == AuthErrorCode.UserNotFound)
+            {
+            }
 
             return command.Id;
         }

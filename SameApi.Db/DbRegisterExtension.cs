@@ -1,4 +1,6 @@
-﻿using Google.Cloud.Firestore;
+﻿using FirebaseAdmin;
+using Google.Apis.Auth.OAuth2;
+using Google.Cloud.Firestore;
 using Google.Cloud.Storage.V1;
 using Microsoft.Extensions.DependencyInjection;
 using SameApi.Db.DbContexts;
@@ -31,6 +33,18 @@ namespace SameApi.Db
                 ProjectId = projectId,
                 DatabaseId = databaseId
             }.Build());
+        }
+
+        public static void RegisterFirebaseAdmin(this IServiceCollection services, string projectId)
+        {
+            if (FirebaseApp.DefaultInstance == null)
+            {
+                FirebaseApp.Create(new AppOptions
+                {
+                    Credential = GoogleCredential.GetApplicationDefault(),
+                    ProjectId = projectId
+                });
+            }
         }
 
         #region seed

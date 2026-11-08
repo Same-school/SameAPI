@@ -43,6 +43,7 @@ builder.Services.AddSwaggerGen(c =>
 // -------------------- Services --------------------
 
 builder.Services.RegisterFireStore(projectId, DatabaseId);
+builder.Services.RegisterFirebaseAdmin(projectId);
 builder.Services.RegisterSameApiDbContainer();
 builder.Services.AddAutoMapper(cfg => { }, typeof(SameApiProfile).Assembly);
 builder.Services.AddValidatorsFromAssemblyContaining<CreateUserCommand>(); 

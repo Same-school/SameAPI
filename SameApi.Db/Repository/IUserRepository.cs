@@ -6,7 +6,8 @@ namespace SameApi.Db.Repository
 {
     public interface IUserRepository : IBaseRepository<IApiSameDbContext, UserDao>
     {
-        Task CreateAsync(UserDao user);                 // utilise user.Id (UID Firebase) comme ID du document
+        Task<UserDao?> GetByEmailAsync(string email);
+        Task CreateAsync(UserDao user);                
         Task<bool> EmailExistsAsync(string? username);
         Task<List<string>> LoadFollowedIdsAsync(string userId);
         Task UpdateFieldsAsync(string id, Dictionary<string, object> updates);

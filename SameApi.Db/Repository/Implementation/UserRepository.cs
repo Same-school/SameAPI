@@ -9,7 +9,15 @@ namespace SameApi.Db.Repository.Implementation
         : BaseRepository<IApiSameDbContext, UserDao>(context), IUserRepository
     {
         protected override string CollectionName => "users";
+        public async Task<UserDao?> GetByEmailAsync(string email)
+        {
+            var snap = await Collection
+                .WhereEqualTo("email", email)
+                .Limit(1)
+                .GetSnapshotAsync();
 
+            return snap.Documents.FirstOrDefault()?.ConvertTo<UserDao>();
+        }
         public async Task CreateAsync(UserDao user)
         {
             var document = Collection.Document(user.Id);
