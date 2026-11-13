@@ -11,19 +11,20 @@ namespace SameApi.Db.UnitOfWork
         public IPostRepository PostRepository { get; }
 
         public ICommentRepository CommentRepository { get; }
+        public ICommunityRepository CommunityRepository { get; }
 
         public SameApiUnitOfWork(
             IApiSameDbContext context,
             IUserRepository userRepository,
             IPostRepository postRepository,
-            ICommentRepository commentRepository)
+            ICommentRepository commentRepository,
+            ICommunityRepository communityRepository)
         {
             Context = context;
             UserRepository = userRepository;
             PostRepository = postRepository;
             CommentRepository = commentRepository;
-
+            CommunityRepository = communityRepository;
         }
-
     }
 }

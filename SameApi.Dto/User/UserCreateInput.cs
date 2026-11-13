@@ -1,4 +1,6 @@
-﻿namespace SameApi.Dto.User
+﻿using SameApi.Model.Enum;
+
+namespace SameApi.Dto.User
 {
     public class UserCreateInput
     {
@@ -10,5 +12,6 @@
         public string? BirthDate { get; set; }
         public bool? IsPrivate { get; set; }
         public string? SchoolId { get; set; }
+        public AppRoleEnum Role { get; set; }
     }
 }

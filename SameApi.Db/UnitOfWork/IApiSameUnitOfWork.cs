@@ -9,7 +9,8 @@ namespace SameApi.Db.UnitOfWork
         IUserRepository UserRepository { get; }
         IPostRepository PostRepository { get; }
         ICommentRepository CommentRepository { get; }
+        ICommunityRepository CommunityRepository { get; }
         //Task<int> SaveChangesAsync();
-        
+
     }
 }

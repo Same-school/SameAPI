@@ -1,8 +1,9 @@
 ﻿using Google.Cloud.Firestore;
+using SameApi.Data.Model;
 namespace SameApi.Model
 {
     [FirestoreData]
-    public class CommunityDao
+    public class CommunityDao : IModelDao
     {
         [FirestoreDocumentId]
         public string Id { get; set; } = "";

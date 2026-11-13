@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using SameApi.Dto.Comment;
+using SameApi.Dto.Community;
 using SameApi.Dto.Post;
 using SameApi.Dto.User;
 using SameApi.Model;
@@ -30,6 +31,8 @@ namespace SameApi.Business
             CreateMap<CommentDao, CommentResponse>()
                 .ForMember(d => d.CreatedAt, o => o.MapFrom(s => s.CreatedAt.ToDateTime()))
                 .ForMember(d => d.Text, o => o.MapFrom(s => s.IsDeleted ? "" : s.Text));
+
+            CreateMap<CommunityCreateInput, CommunityDao>();
         }
     }
 }
