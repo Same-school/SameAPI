@@ -31,6 +31,7 @@ namespace SameApi.Db.Repository.Implementation
                 await db.RunTransactionAsync(tx =>
                 {
                     tx.Create(communityRef, community);
+                    tx.Update(communityRef, "membersCount", FieldValue.Increment(1));
                     tx.Create(membershipRef, ownerMembership);
                     return Task.CompletedTask;
                 });
