@@ -8,6 +8,7 @@ namespace SameApi.Db.Repository
     {
         Task CreateAsync(CommunityDao comment);
         Task JoinAsync(string slug, string uid);
+        Task LeaveAsync(string slug, string uid);
         Task ApproveAsync(string slug, string uid);
     }
 }

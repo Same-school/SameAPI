@@ -26,12 +26,7 @@ namespace SameApi.Business.Community.Command
             if (request.Uid is null)
                 throw new UnauthorizedAccessException("User not logged");
 
-            var user = await _uow.UserRepository.GetByIdAsync(request.Uid);
-
-            if (user.Role == AppRoleEnum.Admin || user.Role == AppRoleEnum.Moderator)
-                await _uow.CommunityRepository.JoinAsync(request.Slug.ToLowerInvariant(), request.Uid);
-            else
-                throw new UnauthorizedAccessException("You are not an admin or a moderator");
+            await _uow.CommunityRepository.JoinAsync(request.Slug.ToLowerInvariant(), request.Uid);
         }
     }
 }

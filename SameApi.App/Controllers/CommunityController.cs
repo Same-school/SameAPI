@@ -39,6 +39,16 @@ namespace SameApi.App.Controllers
             return Ok();
         }
 
+        [HttpPost("leave/{slug}")]
+        public async Task<IActionResult> Leave(string slug)
+        {
+            var uid = User.FindFirst("user_id")?.Value;
+            if (uid is null) return Unauthorized();
+
+            await _mediator.Send(new LeaveCommunityCommand { Slug = slug, Uid = uid });
+            return Ok();
+        }
+
         [HttpPost("approve/{slug}")]
         public async Task<IActionResult> Approve(string slug)
         {

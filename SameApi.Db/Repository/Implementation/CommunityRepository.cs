@@ -81,6 +81,32 @@ namespace SameApi.Db.Repository.Implementation
                 tx.Update(communityRef, "membersCount", FieldValue.Increment(1));
             });
         }
+        public async Task LeaveAsync(string slug, string uid)
+        {
+            var db = Collection.Database;
+            var communityRef = Collection.Document(slug);
+            var membershipRef = db.Collection("membership").Document($"{uid}_{slug}");
+            var now = Timestamp.GetCurrentTimestamp();
+
+            await db.RunTransactionAsync(async tx =>
+            {
+                var snap = await tx.GetSnapshotAsync(membershipRef);
+                if (snap.Exists)
+                {
+                    tx.Delete(membershipRef);
+
+                    tx.Update(communityRef, new Dictionary<string, object>
+                    {
+                        ["membersCount"] = FieldValue.Increment(-1),
+                        ["updatedAt"] = now
+                    });
+                }
+                else
+                    throw new InvalidOperationException($"Membership not found for user '{uid}' in community '{slug}': User is not a member of this community.");
+            });
+
+        }
+
         public async Task ApproveAsync(string slug, string adminUid)
         {
             var db = Collection.Database;
