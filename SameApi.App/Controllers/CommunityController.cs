@@ -29,6 +29,13 @@ namespace SameApi.App.Controllers
             return Ok();
         }
 
+        [HttpPatch("delete")]
+        public async Task<IActionResult> DeleteCommunity([FromBody] DeleteCommunityCommand command, CancellationToken ct)
+        {
+            await _mediator.Send(command, ct);
+            return Ok();
+        }
+
         [HttpPost("join/{slug}")]
         public async Task<IActionResult> Join(string slug)
         {
