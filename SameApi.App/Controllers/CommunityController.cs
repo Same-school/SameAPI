@@ -65,5 +65,28 @@ namespace SameApi.App.Controllers
             await _mediator.Send(new ApproveCommunityQuery { Slug = slug, Uid = uid });
             return Ok();
         }
+
+        [HttpPut("profile-picture/{slug}")]
+        [RequestSizeLimit(5 * 1024 * 1024)]
+        public async Task<IActionResult> UploadProfilePicture(IFormFile file,string slug, CancellationToken ct)
+        {
+            await using var stream = file.OpenReadStream();
+
+            var path = await _mediator.Send(
+                new UploadProfilePictureCommand
+                {
+                    Content = stream,
+                    CommunitySlug = slug
+                });
+
+            return Ok(new { path });
+        }
+
+        [HttpGet("profile-picture/{slug}")]
+        public async Task<IActionResult> GetProfilePicture(string slug , CancellationToken ct)
+        { 
+            var stream = await _mediator.Send(new GetProfilePictureQuery { CommunitySlug = slug}, ct);
+            return stream is null ? NotFound() : File(stream, "image/jpeg");
+        }
     }
 }
