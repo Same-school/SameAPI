@@ -1,5 +1,6 @@
 ﻿using SameApi.Data.Repository;
 using SameApi.Db.DbContexts;
+using SameApi.Dto.Community;
 using SameApi.Model;
 
 namespace SameApi.Db.Repository
@@ -10,5 +11,7 @@ namespace SameApi.Db.Repository
         Task JoinAsync(string slug, string uid);
         Task LeaveAsync(string slug, string uid);
         Task ApproveAsync(string slug, string uid);
+        Task<List<CommunityDao>> GetJoinedByUserAsync(string uid);
+        Task<List<CommunityDao>> GetByCriteriaAsync(CommunityCriteria criteria);
     }
 }

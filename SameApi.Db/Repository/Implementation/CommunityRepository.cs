@@ -1,13 +1,13 @@
 ﻿using Google.Cloud.Firestore;
 using SameApi.Data.Repository;
 using SameApi.Db.DbContexts;
+using SameApi.Dto.Community;
 using SameApi.Model;
 using SameApi.Model.Enum;
 
 namespace SameApi.Db.Repository.Implementation
 {
-    public class CommunityRepository(IApiSameDbContext context)
-        : BaseRepository<IApiSameDbContext, CommunityDao>(context), ICommunityRepository
+    public class CommunityRepository(IApiSameDbContext context) : BaseRepository<IApiSameDbContext, CommunityDao>(context), ICommunityRepository
     {
         protected override string CollectionName => "community";
 
@@ -41,7 +41,6 @@ namespace SameApi.Db.Repository.Implementation
                 throw new InvalidOperationException("A community with this name already exists");
             }
         }
-
         public async Task JoinAsync(string slug, string uid)
         {
             var db = Collection.Database;
@@ -57,7 +56,7 @@ namespace SameApi.Db.Repository.Implementation
                     throw new KeyNotFoundException("Community not found");
 
                 var community = communitySnap.ConvertTo<CommunityDao>();
-                if (community.IsDeleted || community.Status != CommunityStatusEnum.approved)
+                if (community.IsDeleted || community.Status != CommunityStatusEnum.Approved)
                     throw new KeyNotFoundException("Community not found");
 
                 if (membershipSnap.Exists)
@@ -107,7 +106,6 @@ namespace SameApi.Db.Repository.Implementation
             });
 
         }
-
         public async Task ApproveAsync(string slug, string adminUid)
         {
             var db = Collection.Database;
@@ -124,18 +122,74 @@ namespace SameApi.Db.Repository.Implementation
                 if (community.IsDeleted)
                     throw new KeyNotFoundException("Community not found");
 
-                if (community.Status != CommunityStatusEnum.pending)
+                if (community.Status != CommunityStatusEnum.Pending)
                     throw new InvalidOperationException("Community is not pending");
 
                 var now = DateTime.UtcNow;
                 tx.Update(communityRef, new Dictionary<string, object>
                 {
-                    ["status"] = CommunityStatusEnum.approved.ToString(),
+                    ["status"] = CommunityStatusEnum.Approved.ToString(),
                     ["reviewedBy"] = adminUid,
                     ["reviewedAt"] = now,
                     ["updatedAt"] = now
                 });
             });
+        }
+        public async Task<List<CommunityDao>> GetByCriteriaAsync(CommunityCriteria criteria)
+        {
+            if (!string.IsNullOrWhiteSpace(criteria.Slug))
+            {
+                var snap = await Collection.Document(criteria.Slug).GetSnapshotAsync();
+                if (!snap.Exists)
+                    return [];
+
+                var community = snap.ConvertTo<CommunityDao>();
+                return Matches(community, criteria) ? [community] : [];
+            }
+
+            Query query = Collection.WhereEqualTo("isDeleted", false);
+
+            if (criteria.CommunityType.HasValue)
+                query = query.WhereEqualTo("type", criteria.CommunityType.Value.ToString());
+
+            if (criteria.PostingPolicy.HasValue)
+                query = query.WhereEqualTo("postingPolicy", criteria.PostingPolicy.Value.ToString());
+
+            if (criteria.CommunityStatus.HasValue)
+                query = query.WhereEqualTo("status", criteria.CommunityStatus.Value.ToString());
+
+            var result = await query.GetSnapshotAsync();
+            return result.Documents.Select(d => d.ConvertTo<CommunityDao>()).ToList();
+        }
+
+        private static bool Matches(CommunityDao c, CommunityCriteria criteria) =>
+            !c.IsDeleted
+            && (!criteria.CommunityType.HasValue || c.Type == criteria.CommunityType)
+            && (!criteria.PostingPolicy.HasValue || c.PostingPolicy == criteria.PostingPolicy)
+            && (!criteria.CommunityStatus.HasValue || c.Status == criteria.CommunityStatus);
+
+        public async Task<List<CommunityDao>> GetJoinedByUserAsync(string uid)
+        {
+            var db = Collection.Database;
+
+            var memberships = await db.Collection("membership")
+                .WhereEqualTo("userId", uid)
+                .WhereEqualTo("status", MembershipStatusEnum.Active)
+                .GetSnapshotAsync();
+
+            if (memberships.Count == 0) return [];
+
+            var refs = memberships.Documents
+                .Select(d => Collection.Document(d.GetValue<string>("communityId")))
+                .ToList();
+
+            var snaps = await db.GetAllSnapshotsAsync(refs);
+
+            return snaps
+                .Where(s => s.Exists)
+                .Select(s => s.ConvertTo<CommunityDao>())
+                .Where(c => !c.IsDeleted)
+                .ToList();
         }
     }
 }

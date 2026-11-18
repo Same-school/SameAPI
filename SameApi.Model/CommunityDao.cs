@@ -19,7 +19,7 @@ namespace SameApi.Model
         [FirestoreProperty("type", ConverterType = typeof(FirestoreEnumNameConverter<CommunityTypeEnum>))]
         public CommunityTypeEnum Type { get; set; }
         [FirestoreProperty("status", ConverterType = typeof(FirestoreEnumNameConverter<CommunityStatusEnum>))]
-        public CommunityStatusEnum Status { get; set; } = CommunityStatusEnum.pending;
+        public CommunityStatusEnum Status { get; set; } = CommunityStatusEnum.Pending;
 
         [FirestoreProperty("postingPolicy", ConverterType = typeof(FirestoreEnumNameConverter<PostingPolicyEnum>))]
         public PostingPolicyEnum PostingPolicy { get; set; } = PostingPolicyEnum.MembersOnly;

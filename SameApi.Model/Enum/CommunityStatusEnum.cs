@@ -2,8 +2,8 @@
 {
     public enum CommunityStatusEnum
     {
-        pending = 0,
-        approved = 1,
-        rejected = 2
+        Pending ,
+        Approved ,
+        Rejected
     }
 }

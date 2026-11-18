@@ -39,7 +39,11 @@ namespace SameApi.Business.Community.Command
             community.UpdatedAt = now;
             community.CreatedAt = now;
             community.CreatedBy = request.Uid;
-            community.Type = CommunityTypeEnum.community;
+
+            if (request.SchoolId is null)
+                community.Type = CommunityTypeEnum.Community;
+            else
+                community.Type = CommunityTypeEnum.School;
 
             await _uow.CommunityRepository.CreateAsync(community);
         }

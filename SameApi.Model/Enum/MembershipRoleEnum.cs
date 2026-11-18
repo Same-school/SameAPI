@@ -2,8 +2,8 @@
 {
     public enum MembershipRoleEnum
     {
-        Owner = 0,
-        Moderator = 1,
-        Member = 2,
+        Owner,
+        Moderator ,
+        Member ,
     }
 }

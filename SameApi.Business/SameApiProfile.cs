@@ -33,6 +33,10 @@ namespace SameApi.Business
                 .ForMember(d => d.Text, o => o.MapFrom(s => s.IsDeleted ? "" : s.Text));
 
             CreateMap<CommunityCreateInput, CommunityDao>();
+            CreateMap<CommunityDao, CommunityResponse>()
+                .ForMember(d => d.CommunityType, o => o.MapFrom(s => s.Type))
+                .ForMember(d => d.CommunityStatus, o => o.MapFrom(s => s.Status))
+                .ForMember(d => d.MemberCount, o => o.MapFrom(s => s.MembersCount));
         }
     }
 }

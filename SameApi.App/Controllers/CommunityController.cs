@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using SameApi.Business.Community.Command;
 using SameApi.Business.Community.Query;
+using SameApi.Dto.Community;
 
 namespace SameApi.App.Controllers
 {
@@ -28,12 +29,28 @@ namespace SameApi.App.Controllers
             await _mediator.Send(command, ct);
             return Ok();
         }
+        [HttpGet("FollowedCommunities")]
+        public async Task<IActionResult> GetJoinedCommunities(CancellationToken ct)
+        {
+            var uid = User.FindFirst("user_id")?.Value;
+            if (uid is null) return Unauthorized();
+
+            var user = await _mediator.Send(new GetJoinedCommunitiesQuery { Uid = uid}, ct);
+            return user is null ? NotFound() : Ok(user);
+        }
 
         [HttpPatch("delete")]
         public async Task<IActionResult> DeleteCommunity([FromBody] DeleteCommunityCommand command, CancellationToken ct)
         {
             await _mediator.Send(command, ct);
             return Ok();
+        }
+
+        [HttpPost]
+        public async Task<List<CommunityResponse>> Get([FromBody] GetCommunityByCriteriaQuery query, CancellationToken ct)
+        {
+            var result = await _mediator.Send(query, ct);
+            return result;
         }
 
         [HttpPost("join/{slug}")]
