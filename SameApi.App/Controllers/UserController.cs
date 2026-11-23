@@ -97,7 +97,7 @@ namespace SameApi.App.Controllers
 
         [HttpPut("profile-picture")]
         [RequestSizeLimit(5 * 1024 * 1024)]
-        public async Task<IActionResult> GetProfilePicture(IFormFile file, CancellationToken ct)
+        public async Task<IActionResult> UploadProfilePicture(IFormFile file, CancellationToken ct)
         {
             var requesterId = User.FindFirst("user_id")?.Value;
             if (string.IsNullOrEmpty(requesterId))

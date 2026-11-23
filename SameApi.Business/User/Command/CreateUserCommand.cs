@@ -4,6 +4,7 @@ using MediatR;
 using SameApi.Db.UnitOfWork;
 using SameApi.Dto.User;
 using SameApi.Model;
+using SameApi.Model.Enum;
 using System.Text.Json.Serialization;
 
 namespace SameApi.Business.User.Command
@@ -44,6 +45,7 @@ namespace SameApi.Business.User.Command
             user.Id = request.Uid!;
             user.CreatedAt = now;
             user.UpdatedAt = now;
+            user.Role = AppRoleEnum.Member;
 
             await _uow.UserRepository.CreateAsync(user);
         }

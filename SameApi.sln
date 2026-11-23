@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 18
-VisualStudioVersion = 18.12.12328.396 insiders
+VisualStudioVersion = 18.12.12328.396
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SameApi.Business", "SameApi.Business\SameApi.Business.csproj", "{7A6884A3-41EA-4DBD-909D-E60A8089CC7C}"
 EndProject

@@ -18,6 +18,7 @@ namespace SameApi.Db
             services.AddScoped<IUserRepository, UserRepository>();
             services.AddScoped<IPostRepository, PostRepository>();
             services.AddScoped<ICommentRepository, CommentRepository>();
+            services.AddScoped<ICommunityRepository, CommunityRepository>();
 
             services.AddScoped<IApiSameUnitOfWork, SameApiUnitOfWork>();
 
