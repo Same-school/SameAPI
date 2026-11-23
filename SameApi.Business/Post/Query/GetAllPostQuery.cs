@@ -1,12 +1,8 @@
 ﻿using AutoMapper;
-using FluentValidation.Internal;
 using Google.Cloud.Firestore;
 using MediatR;
-using Microsoft.VisualBasic;
 using SameApi.Db.UnitOfWork;
 using SameApi.Dto.Post;
-using SameApi.Dto.User;
-using SameApi.Model;
 
 namespace SameApi.Business.Post.Query
 {
@@ -40,15 +36,7 @@ namespace SameApi.Business.Post.Query
             var candidates = followedIds.Count == 0 ? await _apiSameUnitOfWork.PostRepository.GetRecentPostsAsync(since, PoolPerChunk) 
                                                     : await _apiSameUnitOfWork.PostRepository.GetRecentPostsByAuthorsAsync(followedIds, since, PoolPerChunk);
             var page = candidates
-                .Select(p => new
-                {
-                    Post = p,
-                    Score = (p.WilsonScore + Scoring.BaseScore) * Scoring.Decay(p.CreatedAt.ToDateTime(), now)
-                })
-                .OrderByDescending(x => x.Score)
-                .ThenByDescending(x => x.Post.Id)
                 .Take(PageSize)
-                .Select(x => x.Post) 
                 .ToList();
 
 
