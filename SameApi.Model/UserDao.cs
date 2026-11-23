@@ -1,5 +1,6 @@
 ﻿using Google.Cloud.Firestore;
 using SameApi.Data.Model;
+using SameApi.Model.Enum;
 
 namespace SameApi.Model
 {
@@ -59,5 +60,8 @@ namespace SameApi.Model
 
         [FirestoreProperty("schoolId")]
         public string? SchoolId { get; set; }
+
+        [FirestoreProperty("role")]
+        public AppRoleEnum Role { get; set; }
     }
 }

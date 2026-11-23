@@ -12,7 +12,6 @@
         public int FollowingCount { get; set; }
         public int PostsCount { get; set; }
         public DateTime CreatedAt { get; set; }
-        public string? GenderId { get; set; }
         public string? SchoolId { get; set; }
     }
 }
