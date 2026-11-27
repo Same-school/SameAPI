@@ -24,7 +24,7 @@ namespace SameApi.Business.Community.Query
             if (request.Uid is null)
                 throw new UnauthorizedAccessException("User not logged");
 
-            await _uow.CommunityRepository.ApproveAsync(request.Slug.ToLowerInvariant(), request.Uid);
+            await _uow.CommunityRepository.ApproveAsync(request.Slug, request.Uid);
         }
     }
 }

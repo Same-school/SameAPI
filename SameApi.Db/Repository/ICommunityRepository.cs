@@ -11,6 +11,7 @@ namespace SameApi.Db.Repository
         Task JoinAsync(string slug, string uid);
         Task LeaveAsync(string slug, string uid);
         Task ApproveAsync(string slug, string uid);
+        Task RejectAsync(string slug, string uid, string reason);
         Task<List<CommunityDao>> GetJoinedByUserAsync(string uid);
         Task<List<CommunityDao>> GetByCriteriaAsync(CommunityCriteria criteria);
     }

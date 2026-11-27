@@ -135,6 +135,7 @@ namespace SameApi.Db.Repository.Implementation
                 });
             });
         }
+        
         public async Task<List<CommunityDao>> GetByCriteriaAsync(CommunityCriteria criteria)
         {
             if (!string.IsNullOrWhiteSpace(criteria.Slug))
@@ -190,6 +191,37 @@ namespace SameApi.Db.Repository.Implementation
                 .Select(s => s.ConvertTo<CommunityDao>())
                 .Where(c => !c.IsDeleted)
                 .ToList();
+        }
+
+        public async Task RejectAsync(string slug, string adminUid, string reason)
+        {
+            var db = Collection.Database;
+            var communityRef = Collection.Document(slug);
+            await db.RunTransactionAsync(async tx =>
+            {
+                var snap = await tx.GetSnapshotAsync(communityRef);
+                if (!snap.Exists)
+                    throw new KeyNotFoundException("Community not found");
+
+                var community = snap.ConvertTo<CommunityDao>();
+
+                if (community.IsDeleted)
+                    throw new KeyNotFoundException("Community not found");
+
+                if (community.Status != CommunityStatusEnum.Pending)
+                    throw new InvalidOperationException("Community is not pending");
+
+                var now = DateTime.UtcNow;
+                tx.Update(communityRef, new Dictionary<string, object>
+                {
+                    ["status"] = CommunityStatusEnum.Rejected.ToString(),
+                    ["reviewedBy"] = adminUid,
+                    ["reviewedAt"] = now,
+                    ["updatedAt"] = now,
+                    ["rejectionReason"] = reason
+                });
+            });
+
         }
     }
 }

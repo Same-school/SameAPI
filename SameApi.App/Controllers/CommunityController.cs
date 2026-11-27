@@ -83,6 +83,17 @@ namespace SameApi.App.Controllers
             return Ok();
         }
 
+        [HttpPost("reject/{slug}")]
+        public async Task<IActionResult> Reject([FromRoute] string slug, [FromBody] RejectCommunityCommand command)
+        {
+            var uid = User.FindFirst("user_id")?.Value;
+            if (uid is null) return Unauthorized();
+            command.Slug = slug;
+            command.Uid = uid;
+            await _mediator.Send(command);
+            return Ok();
+        }
+
         [HttpPut("profile-picture/{slug}")]
         [RequestSizeLimit(5 * 1024 * 1024)]
         public async Task<IActionResult> UploadProfilePicture(IFormFile file,string slug, CancellationToken ct)
